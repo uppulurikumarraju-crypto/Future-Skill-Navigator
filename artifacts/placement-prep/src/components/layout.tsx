@@ -20,7 +20,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <div className="w-64 bg-sidebar text-sidebar-foreground flex flex-col fixed inset-y-0 left-0 border-r border-sidebar-border z-10">
         <div className="h-16 flex items-center px-6 border-b border-sidebar-border gap-2">
           <Compass className="h-6 w-6 text-sidebar-primary" />
-          <span className="font-bold text-lg tracking-tight">PlacementPulse</span>
+          <span className="font-bold text-lg tracking-tight">SkillSync</span>
         </div>
         
         <nav className="flex-1 px-4 py-6 space-y-2">
