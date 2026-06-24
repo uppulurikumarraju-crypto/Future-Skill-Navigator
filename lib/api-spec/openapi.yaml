@@ -1,22 +1,33 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: PlacementPulse API - Future-ready placement preparation platform
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: skills
+    description: Skills and demand trends
+  - name: roles
+    description: Target job roles
+  - name: profile
+    description: Student profile management
+  - name: roadmap
+    description: Personalized learning roadmaps
+  - name: assessment
+    description: Skill assessments
+  - name: dashboard
+    description: Dashboard summaries
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,344 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /skills:
+    get:
+      operationId: listSkills
+      tags: [skills]
+      summary: List all skills with demand scores
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of skills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+    post:
+      operationId: createSkill
+      tags: [skills]
+      summary: Create a skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillInput"
+      responses:
+        "201":
+          description: Skill created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+
+  /skills/trending:
+    get:
+      operationId: getTrendingSkills
+      tags: [skills]
+      summary: Get top trending skills right now
+      responses:
+        "200":
+          description: Trending skills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+
+  /skills/future:
+    get:
+      operationId: getFutureSkills
+      tags: [skills]
+      summary: Skills predicted to be in high demand
+      responses:
+        "200":
+          description: Future high-demand skills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+
+  /skills/categories:
+    get:
+      operationId: getSkillCategories
+      tags: [skills]
+      summary: Get all skill categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /skills/{id}:
+    get:
+      operationId: getSkill
+      tags: [skills]
+      summary: Get skill details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Skill details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+        "404":
+          description: Not found
+
+  /roles:
+    get:
+      operationId: listRoles
+      tags: [roles]
+      summary: List target job roles
+      responses:
+        "200":
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
+
+  /roles/{id}/skills:
+    get:
+      operationId: getRoleSkills
+      tags: [roles]
+      summary: Skills required for a specific role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Skills for role
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoleSkill"
+
+  /profile:
+    post:
+      operationId: createProfile
+      tags: [profile]
+      summary: Create student profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileInput"
+      responses:
+        "201":
+          description: Profile created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+
+  /profile/{id}:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get student profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateProfile
+      tags: [profile]
+      summary: Update student profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+
+  /profile/{id}/skills:
+    get:
+      operationId: getProfileSkills
+      tags: [profile]
+      summary: Get student's current skills
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student skills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProfileSkill"
+    post:
+      operationId: addProfileSkill
+      tags: [profile]
+      summary: Add a skill to student profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileSkillInput"
+      responses:
+        "201":
+          description: Skill added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileSkill"
+
+  /profile/{id}/roadmap:
+    get:
+      operationId: getProfileRoadmap
+      tags: [roadmap]
+      summary: Get personalized learning roadmap for student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Personalized roadmap
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Roadmap"
+
+  /assessment:
+    post:
+      operationId: submitAssessment
+      tags: [assessment]
+      summary: Submit a skill self-assessment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssessmentInput"
+      responses:
+        "201":
+          description: Assessment submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assessment"
+
+  /assessment/{profileId}:
+    get:
+      operationId: getAssessments
+      tags: [assessment]
+      summary: Get assessments for a student
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student assessments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Assessment"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get summary stats for dashboard
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /dashboard/skill-trends:
+    get:
+      operationId: getSkillTrends
+      tags: [dashboard]
+      summary: Skill demand trend data over time periods
+      responses:
+        "200":
+          description: Skill trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SkillTrend"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +383,286 @@ components:
       required:
         - status
 
+    Skill:
+      type: object
+      required: [id, name, category, currentDemandScore, futureDemandScore, trend, description]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        currentDemandScore:
+          type: number
+          description: Score 0-100 representing current hiring demand
+        futureDemandScore:
+          type: number
+          description: Predicted demand score 2 years from now
+        trend:
+          type: string
+          enum: [rising, stable, declining]
+        description:
+          type: string
+        resources:
+          type: ["string", "null"]
+          description: JSON array of resource links
+        avgSalary:
+          type: ["integer", "null"]
+        jobCount:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+
+    SkillInput:
+      type: object
+      required: [name, category, currentDemandScore, futureDemandScore, trend, description]
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        currentDemandScore:
+          type: number
+        futureDemandScore:
+          type: number
+        trend:
+          type: string
+          enum: [rising, stable, declining]
+        description:
+          type: string
+        resources:
+          type: string
+        avgSalary:
+          type: integer
+        jobCount:
+          type: integer
+
+    Role:
+      type: object
+      required: [id, title, domain, avgSalary, description]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        domain:
+          type: string
+        avgSalary:
+          type: integer
+        description:
+          type: string
+        openings:
+          type: ["integer", "null"]
+
+    RoleSkill:
+      type: object
+      required: [id, roleId, skillId, importance, skillName]
+      properties:
+        id:
+          type: integer
+        roleId:
+          type: integer
+        skillId:
+          type: integer
+        importance:
+          type: string
+          enum: [must_have, good_to_have, bonus]
+        skillName:
+          type: string
+        skillCategory:
+          type: string
+
+    Profile:
+      type: object
+      required: [id, name, email, targetRoleId, graduationYear, college]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        targetRoleId:
+          type: integer
+        targetRoleTitle:
+          type: ["string", "null"]
+        graduationYear:
+          type: integer
+        college:
+          type: string
+        createdAt:
+          type: string
+
+    ProfileInput:
+      type: object
+      required: [name, email, targetRoleId, graduationYear, college]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        targetRoleId:
+          type: integer
+        graduationYear:
+          type: integer
+        college:
+          type: string
+
+    ProfileUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        targetRoleId:
+          type: integer
+        graduationYear:
+          type: integer
+        college:
+          type: string
+
+    ProfileSkill:
+      type: object
+      required: [id, profileId, skillId, proficiencyLevel, skillName, skillCategory]
+      properties:
+        id:
+          type: integer
+        profileId:
+          type: integer
+        skillId:
+          type: integer
+        proficiencyLevel:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        skillName:
+          type: string
+        skillCategory:
+          type: string
+        currentDemandScore:
+          type: ["number", "null"]
+        futureDemandScore:
+          type: ["number", "null"]
+        trend:
+          type: ["string", "null"]
+
+    ProfileSkillInput:
+      type: object
+      required: [skillId, proficiencyLevel]
+      properties:
+        skillId:
+          type: integer
+        proficiencyLevel:
+          type: string
+          enum: [beginner, intermediate, advanced]
+
+    Roadmap:
+      type: object
+      required: [profileId, targetRole, steps, gapSkills, readinessScore]
+      properties:
+        profileId:
+          type: integer
+        targetRole:
+          type: string
+        readinessScore:
+          type: number
+          description: 0-100 score indicating placement readiness
+        gapSkills:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoadmapStep"
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoadmapStep"
+
+    RoadmapStep:
+      type: object
+      required: [skillId, skillName, priority, timeEstimateWeeks, reason]
+      properties:
+        skillId:
+          type: integer
+        skillName:
+          type: string
+        priority:
+          type: string
+          enum: [critical, high, medium, low]
+        timeEstimateWeeks:
+          type: integer
+        reason:
+          type: string
+        currentDemandScore:
+          type: number
+        futureDemandScore:
+          type: number
+        trend:
+          type: string
+
+    Assessment:
+      type: object
+      required: [id, profileId, skillId, selfRating, skillName, createdAt]
+      properties:
+        id:
+          type: integer
+        profileId:
+          type: integer
+        skillId:
+          type: integer
+        selfRating:
+          type: integer
+          description: 1-5 self rating
+        notes:
+          type: ["string", "null"]
+        skillName:
+          type: string
+        createdAt:
+          type: string
+
+    AssessmentInput:
+      type: object
+      required: [profileId, skillId, selfRating]
+      properties:
+        profileId:
+          type: integer
+        skillId:
+          type: integer
+        selfRating:
+          type: integer
+        notes:
+          type: string
+
+    DashboardStats:
+      type: object
+      required: [totalSkills, risingSkillsCount, decliningSkillsCount, topCategory, avgFutureBoost]
+      properties:
+        totalSkills:
+          type: integer
+        risingSkillsCount:
+          type: integer
+        decliningSkillsCount:
+          type: integer
+        stableSkillsCount:
+          type: integer
+        topCategory:
+          type: string
+        avgFutureBoost:
+          type: number
+          description: Average increase from current to future demand across all rising skills
+
+    SkillTrend:
+      type: object
+      required: [skillId, skillName, category, trend, currentDemandScore, futureDemandScore]
+      properties:
+        skillId:
+          type: integer
+        skillName:
+          type: string
+        category:
+          type: string
+        trend:
+          type: string
+        currentDemandScore:
+          type: number
+        futureDemandScore:
+          type: number
+        growthPercent:
+          type: number
