@@ -22,7 +22,22 @@ const router = Router();
 router.post("/profile", async (req, res) => {
   try {
     const body = CreateProfileBody.parse(req.body);
-    const [profile] = await db.insert(profilesTable).values(body).returning();
+    let profile;
+    try {
+      [profile] = await db.insert(profilesTable).values(body).returning();
+    } catch (insertErr: any) {
+      if (insertErr?.cause?.code === "23505" || insertErr?.message?.includes("duplicate key")) {
+        const [existing] = await db
+          .select()
+          .from(profilesTable)
+          .where(eq(profilesTable.email, body.email));
+        if (existing) {
+          const [role] = await db.select().from(rolesTable).where(eq(rolesTable.id, existing.targetRoleId));
+          return res.status(200).json({ ...existing, targetRoleTitle: role?.title ?? null });
+        }
+      }
+      throw insertErr;
+    }
     const [role] = await db.select().from(rolesTable).where(eq(rolesTable.id, profile.targetRoleId));
     res.status(201).json({ ...profile, targetRoleTitle: role?.title ?? null });
   } catch (err) {
