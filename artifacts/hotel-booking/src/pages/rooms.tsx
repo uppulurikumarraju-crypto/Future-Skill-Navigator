@@ -102,7 +102,7 @@ export default function Rooms() {
                       </h3>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-medium">${room.price}</p>
+                      <p className="text-lg font-medium">₹{room.price}</p>
                       <p className="text-xs text-muted-foreground">per night</p>
                     </div>
                   </div>

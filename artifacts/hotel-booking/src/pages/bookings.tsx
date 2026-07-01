@@ -112,7 +112,7 @@ export default function Bookings() {
               <div className="md:border-l md:border-border md:pl-8 flex flex-col justify-between md:items-end">
                 <div className="md:text-right mb-6">
                   <p className="text-sm text-muted-foreground mb-1">Total Amount</p>
-                  <p className="text-3xl font-serif">${booking.totalPrice}</p>
+                  <p className="text-3xl font-serif">₹{booking.totalPrice}</p>
                 </div>
                 
                 {booking.status === 'confirmed' && (

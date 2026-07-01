@@ -153,7 +153,7 @@ export default function RoomDetail() {
           <div>
             <div className="sticky top-28 bg-card border border-border p-6 rounded-xl shadow-sm">
               <div className="flex items-end gap-2 mb-6 border-b border-border pb-6">
-                <span className="text-4xl font-serif">${room.price}</span>
+                <span className="text-4xl font-serif">₹{room.price}</span>
                 <span className="text-muted-foreground mb-1">/ night</span>
               </div>
 

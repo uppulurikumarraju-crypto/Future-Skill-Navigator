@@ -63,7 +63,7 @@ export default function Admin() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats?.revenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">₹{stats?.revenue.toLocaleString()}</div>
           </CardContent>
         </Card>
         <Card>
@@ -131,7 +131,7 @@ export default function Admin() {
                     {booking.status}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right">${booking.totalPrice}</TableCell>
+                <TableCell className="text-right">₹{booking.totalPrice}</TableCell>
               </TableRow>
             ))}
             {bookings?.length === 0 && (
