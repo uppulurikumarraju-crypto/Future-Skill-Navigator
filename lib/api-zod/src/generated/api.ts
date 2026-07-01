@@ -324,6 +324,168 @@ export const GetDashboardStatsResponse = zod.object({
 
 
 /**
+ * @summary Register a new hotel guest
+ */
+export const HotelRegisterBody = zod.object({
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "password": zod.string()
+})
+
+
+/**
+ * @summary Login as hotel guest or admin
+ */
+export const HotelLoginBody = zod.object({
+  "email": zod.string(),
+  "password": zod.string()
+})
+
+export const HotelLoginResponse = zod.object({
+  "user": zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "role": zod.enum(['guest', 'admin']),
+  "createdAt": zod.string().optional()
+}),
+  "token": zod.string()
+})
+
+
+/**
+ * @summary List all hotel rooms
+ */
+export const ListHotelRoomsQueryParams = zod.object({
+  "type": zod.coerce.string().optional(),
+  "status": zod.coerce.string().optional()
+})
+
+export const ListHotelRoomsResponseItem = zod.object({
+  "id": zod.number(),
+  "roomNumber": zod.string(),
+  "roomType": zod.enum(['single', 'double', 'luxury', 'suite']),
+  "price": zod.number(),
+  "status": zod.enum(['available', 'booked', 'maintenance']),
+  "description": zod.string(),
+  "imageUrl": zod.string().nullish(),
+  "capacity": zod.number().optional(),
+  "amenities": zod.string().nullish()
+})
+export const ListHotelRoomsResponse = zod.array(ListHotelRoomsResponseItem)
+
+
+/**
+ * @summary Get a specific room
+ */
+export const GetHotelRoomParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetHotelRoomResponse = zod.object({
+  "id": zod.number(),
+  "roomNumber": zod.string(),
+  "roomType": zod.enum(['single', 'double', 'luxury', 'suite']),
+  "price": zod.number(),
+  "status": zod.enum(['available', 'booked', 'maintenance']),
+  "description": zod.string(),
+  "imageUrl": zod.string().nullish(),
+  "capacity": zod.number().optional(),
+  "amenities": zod.string().nullish()
+})
+
+
+/**
+ * @summary Book a room
+ */
+export const CreateHotelBookingBody = zod.object({
+  "userId": zod.number(),
+  "roomId": zod.number(),
+  "checkIn": zod.string(),
+  "checkOut": zod.string()
+})
+
+
+/**
+ * @summary Get all bookings for a user
+ */
+export const GetUserHotelBookingsParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetUserHotelBookingsResponseItem = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "roomId": zod.number(),
+  "checkIn": zod.string(),
+  "checkOut": zod.string(),
+  "status": zod.enum(['confirmed', 'cancelled', 'completed']),
+  "totalPrice": zod.number(),
+  "guestName": zod.string(),
+  "roomNumber": zod.string(),
+  "roomType": zod.string(),
+  "createdAt": zod.string().optional()
+})
+export const GetUserHotelBookingsResponse = zod.array(GetUserHotelBookingsResponseItem)
+
+
+/**
+ * @summary Cancel a booking
+ */
+export const CancelHotelBookingParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const CancelHotelBookingResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "roomId": zod.number(),
+  "checkIn": zod.string(),
+  "checkOut": zod.string(),
+  "status": zod.enum(['confirmed', 'cancelled', 'completed']),
+  "totalPrice": zod.number(),
+  "guestName": zod.string(),
+  "roomNumber": zod.string(),
+  "roomType": zod.string(),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Admin dashboard stats
+ */
+export const GetHotelAdminStatsResponse = zod.object({
+  "totalRooms": zod.number(),
+  "bookedRooms": zod.number(),
+  "availableRooms": zod.number(),
+  "totalUsers": zod.number(),
+  "totalBookings": zod.number(),
+  "revenue": zod.number()
+})
+
+
+/**
+ * @summary List all bookings (admin)
+ */
+export const ListAllHotelBookingsResponseItem = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "roomId": zod.number(),
+  "checkIn": zod.string(),
+  "checkOut": zod.string(),
+  "status": zod.enum(['confirmed', 'cancelled', 'completed']),
+  "totalPrice": zod.number(),
+  "guestName": zod.string(),
+  "roomNumber": zod.string(),
+  "roomType": zod.string(),
+  "createdAt": zod.string().optional()
+})
+export const ListAllHotelBookingsResponse = zod.array(ListAllHotelBookingsResponseItem)
+
+
+/**
  * @summary Skill demand trend data over time periods
  */
 export const GetSkillTrendsResponseItem = zod.object({

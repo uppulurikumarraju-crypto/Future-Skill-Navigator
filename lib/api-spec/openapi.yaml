@@ -21,6 +21,14 @@ tags:
     description: Skill assessments
   - name: dashboard
     description: Dashboard summaries
+  - name: hotel-auth
+    description: Hotel user registration and login
+  - name: hotel-rooms
+    description: Hotel room management
+  - name: hotel-bookings
+    description: Room booking operations
+  - name: hotel-admin
+    description: Admin dashboard and management
 
 paths:
   /healthz:
@@ -358,6 +366,174 @@ paths:
               schema:
                 $ref: "#/components/schemas/DashboardStats"
 
+  /hotel/auth/register:
+    post:
+      operationId: hotelRegister
+      tags: [hotel-auth]
+      summary: Register a new hotel guest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HotelUserInput"
+      responses:
+        "201":
+          description: Registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelAuthResponse"
+
+  /hotel/auth/login:
+    post:
+      operationId: hotelLogin
+      tags: [hotel-auth]
+      summary: Login as hotel guest or admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HotelLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelAuthResponse"
+
+  /hotel/rooms:
+    get:
+      operationId: listHotelRooms
+      tags: [hotel-rooms]
+      summary: List all hotel rooms
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HotelRoom"
+
+  /hotel/rooms/{id}:
+    get:
+      operationId: getHotelRoom
+      tags: [hotel-rooms]
+      summary: Get a specific room
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Room details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelRoom"
+
+  /hotel/bookings:
+    post:
+      operationId: createHotelBooking
+      tags: [hotel-bookings]
+      summary: Book a room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HotelBookingInput"
+      responses:
+        "201":
+          description: Booking confirmed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelBooking"
+
+  /hotel/bookings/user/{userId}:
+    get:
+      operationId: getUserHotelBookings
+      tags: [hotel-bookings]
+      summary: Get all bookings for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HotelBooking"
+
+  /hotel/bookings/{id}/cancel:
+    patch:
+      operationId: cancelHotelBooking
+      tags: [hotel-bookings]
+      summary: Cancel a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Booking cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelBooking"
+
+  /hotel/admin/stats:
+    get:
+      operationId: getHotelAdminStats
+      tags: [hotel-admin]
+      summary: Admin dashboard stats
+      responses:
+        "200":
+          description: Admin statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelAdminStats"
+
+  /hotel/admin/bookings:
+    get:
+      operationId: listAllHotelBookings
+      tags: [hotel-admin]
+      summary: List all bookings (admin)
+      responses:
+        "200":
+          description: All bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HotelBooking"
+
   /dashboard/skill-trends:
     get:
       operationId: getSkillTrends
@@ -665,4 +841,136 @@ components:
         futureDemandScore:
           type: number
         growthPercent:
+          type: number
+
+    HotelUser:
+      type: object
+      required: [id, name, email, phone, role]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+          enum: [guest, admin]
+        createdAt:
+          type: string
+
+    HotelUserInput:
+      type: object
+      required: [name, email, phone, password]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+
+    HotelLoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    HotelAuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          $ref: "#/components/schemas/HotelUser"
+        token:
+          type: string
+
+    HotelRoom:
+      type: object
+      required: [id, roomNumber, roomType, price, status, description]
+      properties:
+        id:
+          type: integer
+        roomNumber:
+          type: string
+        roomType:
+          type: string
+          enum: [single, double, luxury, suite]
+        price:
+          type: number
+        status:
+          type: string
+          enum: [available, booked, maintenance]
+        description:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+        capacity:
+          type: integer
+        amenities:
+          type: ["string", "null"]
+
+    HotelBooking:
+      type: object
+      required: [id, userId, roomId, checkIn, checkOut, status, totalPrice, guestName, roomNumber, roomType]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        roomId:
+          type: integer
+        checkIn:
+          type: string
+        checkOut:
+          type: string
+        status:
+          type: string
+          enum: [confirmed, cancelled, completed]
+        totalPrice:
+          type: number
+        guestName:
+          type: string
+        roomNumber:
+          type: string
+        roomType:
+          type: string
+        createdAt:
+          type: string
+
+    HotelBookingInput:
+      type: object
+      required: [userId, roomId, checkIn, checkOut]
+      properties:
+        userId:
+          type: integer
+        roomId:
+          type: integer
+        checkIn:
+          type: string
+        checkOut:
+          type: string
+
+    HotelAdminStats:
+      type: object
+      required: [totalRooms, bookedRooms, availableRooms, totalUsers, totalBookings, revenue]
+      properties:
+        totalRooms:
+          type: integer
+        bookedRooms:
+          type: integer
+        availableRooms:
+          type: integer
+        totalUsers:
+          type: integer
+        totalBookings:
+          type: integer
+        revenue:
           type: number

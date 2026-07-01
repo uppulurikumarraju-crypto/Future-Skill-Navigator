@@ -223,8 +223,119 @@ export interface SkillTrend {
   growthPercent?: number;
 }
 
+export type HotelUserRole = typeof HotelUserRole[keyof typeof HotelUserRole];
+
+
+export const HotelUserRole = {
+  guest: 'guest',
+  admin: 'admin',
+} as const;
+
+export interface HotelUser {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  role: HotelUserRole;
+  createdAt?: string;
+}
+
+export interface HotelUserInput {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+}
+
+export interface HotelLoginInput {
+  email: string;
+  password: string;
+}
+
+export interface HotelAuthResponse {
+  user: HotelUser;
+  token: string;
+}
+
+export type HotelRoomRoomType = typeof HotelRoomRoomType[keyof typeof HotelRoomRoomType];
+
+
+export const HotelRoomRoomType = {
+  single: 'single',
+  double: 'double',
+  luxury: 'luxury',
+  suite: 'suite',
+} as const;
+
+export type HotelRoomStatus = typeof HotelRoomStatus[keyof typeof HotelRoomStatus];
+
+
+export const HotelRoomStatus = {
+  available: 'available',
+  booked: 'booked',
+  maintenance: 'maintenance',
+} as const;
+
+export interface HotelRoom {
+  id: number;
+  roomNumber: string;
+  roomType: HotelRoomRoomType;
+  price: number;
+  status: HotelRoomStatus;
+  description: string;
+  /** @nullable */
+  imageUrl?: string | null;
+  capacity?: number;
+  /** @nullable */
+  amenities?: string | null;
+}
+
+export type HotelBookingStatus = typeof HotelBookingStatus[keyof typeof HotelBookingStatus];
+
+
+export const HotelBookingStatus = {
+  confirmed: 'confirmed',
+  cancelled: 'cancelled',
+  completed: 'completed',
+} as const;
+
+export interface HotelBooking {
+  id: number;
+  userId: number;
+  roomId: number;
+  checkIn: string;
+  checkOut: string;
+  status: HotelBookingStatus;
+  totalPrice: number;
+  guestName: string;
+  roomNumber: string;
+  roomType: string;
+  createdAt?: string;
+}
+
+export interface HotelBookingInput {
+  userId: number;
+  roomId: number;
+  checkIn: string;
+  checkOut: string;
+}
+
+export interface HotelAdminStats {
+  totalRooms: number;
+  bookedRooms: number;
+  availableRooms: number;
+  totalUsers: number;
+  totalBookings: number;
+  revenue: number;
+}
+
 export type ListSkillsParams = {
 category?: string;
 search?: string;
+};
+
+export type ListHotelRoomsParams = {
+type?: string;
+status?: string;
 };
 

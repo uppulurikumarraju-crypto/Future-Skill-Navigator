@@ -6,6 +6,7 @@ import profileRouter from "./profile";
 import roadmapRouter from "./roadmap";
 import assessmentRouter from "./assessment";
 import dashboardRouter from "./dashboard";
+import hotelRouter from "./hotel";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(profileRouter);
 router.use(roadmapRouter);
 router.use(assessmentRouter);
 router.use(dashboardRouter);
+router.use(hotelRouter);
 
 export default router;
