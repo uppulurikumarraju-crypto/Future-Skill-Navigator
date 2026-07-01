@@ -1,0 +1,418 @@
+
+
+
+
+Design the website.
+Create the MySQL database.
+Connect Python to MySQL.
+Implement login, registration, room booking, and an admin dashboard step by step.
+
+Yes. Based on our previous conversations, I know you're building this as a final-year project and you're learning SQL, Python, and website development. This project is perfect because it combines all three.
+
+Project: Hotel Room Booking System
+Technologies
+Part	Technology
+Frontend	HTML, CSS, JavaScript
+Backend	Python (Flask)
+Database	MySQL
+IDE	VS Code
+Database Tool	MySQL Workbench
+API Testing	Browser/Postman
+Complete Roadmap
+Hotel Booking Website
+
+│
+├── Step 1: Install Software
+│
+├── Step 2: Create Project Folder
+│
+├── Step 3: Design Website (HTML/CSS)
+│
+├── Step 4: Create MySQL Database
+│
+├── Step 5: Connect Python + MySQL
+│
+├── Step 6: Registration
+│
+├── Step 7: Login
+│
+├── Step 8: Room Booking
+│
+├── Step 9: Admin Dashboard
+│
+├── Step 10: Payment (Optional)
+│
+└── Step 11: Deploy Website
+Step 1 Install Software
+Install these:
+
+✅ Python
+
+✅ VS Code
+
+✅ MySQL Server
+
+✅ MySQL Workbench
+
+Then install Python packages:
+
+pip install flask
+pip install mysql-connector-python
+Step 2 Create Project Folder
+HotelBooking/
+
+│
+├── app.py
+│
+├── database.py
+│
+├── templates/
+│     │
+│     ├── index.html
+│     ├── login.html
+│     ├── register.html
+│     ├── booking.html
+│     ├── admin.html
+│
+├── static/
+│     │
+│     ├── style.css
+│     ├── script.js
+│
+└── images/
+Step 3 Design Website
+Pages you'll build:
+
+Home
+--------------------------------
+
+HOTEL BOOKING
+
+Book Your Dream Room
+
+[Login]
+
+[Register]
+
+[Book Room]
+
+--------------------------------
+Login Page
+Username
+
+Password
+
+[Login]
+Registration
+Name
+
+Email
+
+Phone
+
+Password
+
+[Register]
+Booking Page
+Customer Name
+
+Room Type
+
+Check In
+
+Check Out
+
+Guests
+
+[Book Now]
+Admin Dashboard
+Total Rooms
+
+Booked Rooms
+
+Available Rooms
+
+Registered Users
+
+Booking History
+Step 4 Create MySQL Database
+Open MySQL Workbench.
+
+Create database.
+
+CREATE DATABASE hotel_booking;
+Use it.
+
+USE hotel_booking;
+User Table
+CREATE TABLE users(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+name VARCHAR(100),
+
+email VARCHAR(100),
+
+phone VARCHAR(20),
+
+password VARCHAR(100)
+
+);
+Rooms Table
+CREATE TABLE rooms(
+
+room_id INT AUTO_INCREMENT PRIMARY KEY,
+
+room_number VARCHAR(20),
+
+room_type VARCHAR(50),
+
+price DECIMAL(10,2),
+
+status VARCHAR(20)
+
+);
+Booking Table
+CREATE TABLE bookings(
+
+booking_id INT AUTO_INCREMENT PRIMARY KEY,
+
+user_id INT,
+
+room_id INT,
+
+check_in DATE,
+
+check_out DATE,
+
+FOREIGN KEY(user_id) REFERENCES users(id),
+
+FOREIGN KEY(room_id) REFERENCES rooms(room_id)
+
+);
+Database Structure
+Users
+------
+
+id
+
+name
+
+email
+
+phone
+
+password
+
+        |
+
+        |
+
+Bookings
+
+booking_id
+
+user_id
+
+room_id
+
+check_in
+
+check_out
+
+        |
+
+        |
+
+Rooms
+
+room_id
+
+room_number
+
+room_type
+
+price
+
+status
+Step 5 Connect Python to MySQL
+Create
+
+database.py
+import mysql.connector
+
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="your_password",
+    database="hotel_booking"
+)
+
+cursor = conn.cursor()
+
+print("Connected Successfully")
+Run
+
+python database.py
+Output
+
+Connected Successfully
+Step 6 Registration
+User fills
+
+Name
+
+Email
+
+Phone
+
+Password
+Python
+
+↓
+
+Insert into MySQL
+
+↓
+
+Registration Successful
+
+SQL
+
+INSERT INTO users(name,email,phone,password)
+VALUES(%s,%s,%s,%s)
+Step 7 Login
+User enters
+
+Email
+
+Password
+Python checks
+
+SELECT *
+FROM users
+WHERE email=%s
+AND password=%s;
+If found
+
+Login Success
+Else
+
+Invalid Login
+Step 8 Room Booking
+Customer selects
+
+Single
+
+Double
+
+Luxury
+Then
+
+Check In
+
+Check Out
+Insert
+
+INSERT INTO bookings
+(user_id,room_id,check_in,check_out)
+VALUES(%s,%s,%s,%s);
+Update room
+
+UPDATE rooms
+
+SET status='Booked'
+
+WHERE room_id=1;
+Step 9 Admin Dashboard
+Admin Login
+
+↓
+
+Dashboard
+
+Total Users
+
+Total Rooms
+
+Booked Rooms
+
+Available Rooms
+
+Total Bookings
+Queries
+
+Total Users
+
+SELECT COUNT(*) FROM users;
+Booked Rooms
+
+SELECT COUNT(*)
+
+FROM rooms
+
+WHERE status='Booked';
+Available Rooms
+
+SELECT COUNT(*)
+
+FROM rooms
+
+WHERE status='Available';
+Booking History
+
+SELECT *
+
+FROM bookings;
+Step 10 Search Rooms
+SELECT *
+
+FROM rooms
+
+WHERE room_type='Luxury'
+
+AND status='Available';
+Step 11 Logout
+Destroy session.
+
+Return to Login Page.
+
+Final Project Flow
+Open Website
+
+↓
+
+Home
+
+↓
+
+Register
+
+↓
+
+Login
+
+↓
+
+Book Room
+
+↓
+
+Booking Stored in MySQL
+
+↓
+
+Admin Dashboard
+
+↓
+
+View Users
+
+↓
+
+View Rooms
+
+↓
+
+View Bookings
+
