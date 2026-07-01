@@ -26,7 +26,7 @@ export default function Bookings() {
   const queryClient = useQueryClient();
 
   const { data: bookings, isLoading } = useGetUserHotelBookings(user?.id as number, {
-    query: { enabled: !!user?.id }
+    query: { enabled: !!user?.id, queryKey: getGetUserHotelBookingsQueryKey(user?.id as number) }
   });
 
   const cancelMutation = useCancelHotelBooking();

@@ -3,7 +3,7 @@ import { useParams, useLocation, Link } from "wouter";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Users, Wind, Wifi, Coffee, Tv } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { useGetHotelRoom, useCreateHotelBooking } from "@workspace/api-client-react";
+import { useGetHotelRoom, useCreateHotelBooking, getGetHotelRoomQueryKey } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,7 +23,7 @@ export default function RoomDetail() {
   });
 
   const { data: room, isLoading } = useGetHotelRoom(Number(id), {
-    query: { enabled: !!id }
+    query: { enabled: !!id, queryKey: getGetHotelRoomQueryKey(Number(id)) }
   });
 
   const bookMutation = useCreateHotelBooking();

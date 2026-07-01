@@ -4,7 +4,9 @@ import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { 
   useGetHotelAdminStats, 
-  useListAllHotelBookings 
+  useListAllHotelBookings,
+  getGetHotelAdminStatsQueryKey,
+  getListAllHotelBookingsQueryKey,
 } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -30,11 +32,11 @@ export default function Admin() {
   }
 
   const { data: stats, isLoading: statsLoading } = useGetHotelAdminStats({
-    query: { enabled: !!user && user.role === "admin" }
+    query: { enabled: !!user && user.role === "admin", queryKey: getGetHotelAdminStatsQueryKey() }
   });
 
   const { data: bookings, isLoading: bookingsLoading } = useListAllHotelBookings({
-    query: { enabled: !!user && user.role === "admin" }
+    query: { enabled: !!user && user.role === "admin", queryKey: getListAllHotelBookingsQueryKey() }
   });
 
   if (statsLoading || bookingsLoading) {
